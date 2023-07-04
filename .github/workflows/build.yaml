@@ -28,4 +28,4 @@ jobs:
         run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u $ --password-stdin
 
       - name: Build
-        run: docker buildx build --platform=linux/arm/v7 -o type=image,push=true --tag ghcr.io/rtm516/docker-net-dhcp:release-linux-arm-v7
+        run: docker buildx build --platform=linux/arm/v7 -o type=image,push=true --tag ghcr.io/rtm516/docker-net-dhcp:release-linux-arm-v7 .
