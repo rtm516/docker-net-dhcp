@@ -11,7 +11,6 @@ jobs:
 
     env:
       PLUGIN_NAME: ghcr.io/rtm516/docker-net-dhcp
-      PLATFORMS: linux/amd64,linux/386,linux/arm64,linux/arm/v7
 
     steps:
       - uses: actions/checkout@v2
@@ -24,20 +23,9 @@ jobs:
 
       - name: Install script dependencies
         run: pip3 install -r scripts/requirements.txt
-
-      - id: vars
-        name: Generate build vars
-        run: |
-          SHA="${{ github.sha }}"
-          echo "::set-output name=tag::"${SHA:0:8}-$(date +%s)Z""
+        
+      - name: Log in to registry
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u $ --password-stdin
 
       - name: Build
-        run: make PLUGIN_TAG=${{ steps.vars.outputs.tag }} multiarch
-
-      - name: Push
-        env:
-          REGISTRY_USERNAME: ${{ github.actor }}
-          REGISTRY_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          make PLUGIN_TAG=${{ steps.vars.outputs.tag }} push-multiarch
-          scripts/tag_multiarch_plugin.py -p "$PLATFORMS" "$PLUGIN_NAME:${{ steps.vars.outputs.tag }}" latest
+        run: docker buildx build --platform=linux/arm/v7 -o type=image,push=true --tag ghcr.io/rtm516/docker-net-dhcp:release-linux-arm-v7
