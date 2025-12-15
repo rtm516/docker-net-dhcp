@@ -84,9 +84,9 @@ func NewPlugin(awaitTimeout time.Duration) (*Plugin, error) {
 	)
 	for {
 		client, err = docker.NewClientWithOpts(
-			docker.WithHost("unix:///run/docker.sock"),
 			docker.WithAPIVersionNegotiation(),
-			docker.WithTimeout(5*time.Second)) // If local Docker doesn't respond in under 2s, it's probably not ready.
+			docker.WithTimeout(5*time.Second), // If local Docker doesn't respond in under 2s, it's probably not ready.
+			docker.FromEnv)
 		if err == nil {
 			break;
 		}
